@@ -173,8 +173,10 @@ func (s *Store) Assess(ctx context.Context, id string) (HoldTest, error) {
 	}
 
 	loss := record.Samples[0].VacuumKPa - last.VacuumKPa
+	comparisonScale := math.Max(record.Samples[0].VacuumKPa, math.Max(last.VacuumKPa, record.MaximumVacuumLossKPa))
+	tolerance := 2 * (math.Nextafter(1, 2) - 1) * comparisonScale
 	result := StatusPassed
-	if loss > record.MaximumVacuumLossKPa {
+	if loss-record.MaximumVacuumLossKPa > tolerance {
 		result = StatusFailed
 	}
 	record.Status = result
