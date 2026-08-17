@@ -48,8 +48,8 @@ func RunSmoke(out io.Writer) error {
 	if fetched.Status != StatusPassed || completed.Status != StatusPassed || fetched.Assessment == nil {
 		return fmt.Errorf("smoke assessment did not pass")
 	}
-	fmt.Fprintf(out, "smoke: %s (%s, loss %.1f kPa)\n", fetched.Status, fetched.ID, fetched.Assessment.VacuumLossKPa)
-	return nil
+	_, err = fmt.Fprintf(out, "smoke: %s (%s, loss %.1f kPa)\n", fetched.Status, fetched.ID, fetched.Assessment.VacuumLossKPa)
+	return err
 }
 
 func smokeRequest(handler http.Handler, method, path, body string) ([]byte, error) {
