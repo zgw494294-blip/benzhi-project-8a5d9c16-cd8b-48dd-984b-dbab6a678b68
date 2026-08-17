@@ -165,7 +165,7 @@ func (s *Store) Assess(ctx context.Context, id string) (HoldTest, error) {
 		return HoldTest{}, domainError(ErrorConflict, ErrConflict, "samples", "at least two samples are required")
 	}
 	last := record.Samples[len(record.Samples)-1]
-	if last.ElapsedSeconds < record.MinimumHoldSeconds {
+	if last.ElapsedSeconds-record.Samples[0].ElapsedSeconds < record.MinimumHoldSeconds {
 		return HoldTest{}, domainError(ErrorConflict, ErrConflict, "elapsed_seconds", "minimum hold duration has not been reached")
 	}
 	if err := ctx.Err(); err != nil {
