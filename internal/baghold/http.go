@@ -1,12 +1,14 @@
 package baghold
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
 	"strings"
+	"unicode/utf8"
 )
 
 type createRequest struct {
@@ -133,7 +135,14 @@ func (h *Handler) getTest(w http.ResponseWriter, id string) {
 }
 
 func decodeJSON(r *http.Request, destination any) error {
-	decoder := json.NewDecoder(r.Body)
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		return err
+	}
+	if !utf8.Valid(body) {
+		return errors.New("request body must contain valid UTF-8")
+	}
+	decoder := json.NewDecoder(bytes.NewReader(body))
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(destination); err != nil {
 		return err
