@@ -1,0 +1,3 @@
+module example.com/baghold
+
+go 1.22.0
