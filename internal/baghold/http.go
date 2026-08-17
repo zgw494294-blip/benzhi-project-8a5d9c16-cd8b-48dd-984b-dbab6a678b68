@@ -36,6 +36,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
 	if len(parts) == 1 && parts[0] == "tests" {
 		if r.Method != http.MethodPost {
+			w.Header().Set("Allow", http.MethodPost)
 			writeError(w, http.StatusMethodNotAllowed, "method_not_allowed", "method not allowed")
 			return
 		}
@@ -51,18 +52,21 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case len(parts) == 2:
 		if r.Method != http.MethodGet {
+			w.Header().Set("Allow", http.MethodGet)
 			writeError(w, http.StatusMethodNotAllowed, "method_not_allowed", "method not allowed")
 			return
 		}
 		h.getTest(w, id)
 	case parts[2] == "samples":
 		if r.Method != http.MethodPost {
+			w.Header().Set("Allow", http.MethodPost)
 			writeError(w, http.StatusMethodNotAllowed, "method_not_allowed", "method not allowed")
 			return
 		}
 		h.addSample(w, r, id)
 	case parts[2] == "assess":
 		if r.Method != http.MethodPost {
+			w.Header().Set("Allow", http.MethodPost)
 			writeError(w, http.StatusMethodNotAllowed, "method_not_allowed", "method not allowed")
 			return
 		}
